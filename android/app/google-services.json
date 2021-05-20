@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "161561400062",
+    "project_id": "app-mamo",
+    "storage_bucket": "app-mamo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161561400062:android:5831dd609fe1394d6ccbaf",
+        "android_client_info": {
+          "package_name": "com.share4seo.mamo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "161561400062-r5otrngm0pdsaje9bc49vvabtfhl3vao.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-49lSKhAwSdRGu1zbvYJqci76iOE2SSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "161561400062-r5otrngm0pdsaje9bc49vvabtfhl3vao.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

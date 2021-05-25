@@ -280,6 +280,7 @@ class SigninAccountViewState extends State<SigninAccountView>
     }
   }
 
+
   void signInAccount() async {
     if (_accountController.text == '') {
       Utilities.showToast(context, 'Bạn chưa nhập tài khoản');

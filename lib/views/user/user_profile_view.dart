@@ -43,9 +43,6 @@ class _UserProfileViewState extends State<UserProfileView> {
     bloc = GetUserProfileBloc();
     getAccountBloc.getAccount(context);
   }
-
-
-
   UserProfileModel loadFromCache() {
     var userInfo = UserProfileModel();
     userInfo.fullName = GlobalCache().loginData.fullName;
@@ -58,7 +55,6 @@ class _UserProfileViewState extends State<UserProfileView> {
     userInfo.momoName = GlobalCache().loginData.momoName;
     return userInfo;
   }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -116,42 +112,11 @@ class _UserProfileViewState extends State<UserProfileView> {
                                   circleAvatar(GlobalCache()
                                       ?.loginData
                                       ?.avatarUrl,GlobalCache()?.loginData?.fullName??""),
-                                  // CircleAvatar(
-                                  //   radius: setWidth(45),
-                                  //   backgroundImage:
-                                  //       CachedNetworkImageProvider(
-                                  //           ApiConstants.shared.getFullImage(
-                                  //               GlobalCache()
-                                  //                   .loginData
-                                  //                   .avatarUrl)),
-                                  // ),
                                   Positioned(
                                     bottom: 0,
                                     right: 0,
                                     child: GestureDetector(
                                       onTap: () async {
-                                        //todo test
-                                        // var status = await Permission.accessMediaLocation.request();
-                                        // // var status = await Permission.accessMediaLocation.status;
-                                        // if (status == PermissionStatus.granted){
-                                        //   Utilities.showToast(context, "bạn đã cho phép truy cập ảnh");
-                                        // } else showDialog(
-                                        //     context: context,
-                                        //     builder: (BuildContext context) => CupertinoAlertDialog(
-                                        //       title: Text('Truy cập thông tin ảnh'),
-                                        //       content: Text(
-                                        //           'Ứng dụng cần bạn cho phép truy cập thông tin ảnh'),
-                                        //       actions: <Widget>[
-                                        //         CupertinoDialogAction(
-                                        //           child: Text('Từ chối'),
-                                        //           onPressed: () => Navigator.of(context).pop(),
-                                        //         ),
-                                        //         CupertinoDialogAction(
-                                        //           child: Text('Cài đặt'),
-                                        //           onPressed: () => openAppSettings(),
-                                        //         ),
-                                        //       ],
-                                        //     ));
                                         List<Asset> resultList =
                                         await MultiImagePicker.pickImages(
                                             maxImages: 1,
@@ -361,12 +326,12 @@ class _UserProfileViewState extends State<UserProfileView> {
     return Container(
       margin: EdgeInsets.only(
           left: setWidth(16), right: setWidth(16)),
-      padding: EdgeInsets.only(bottom: setHeight(16), top: setHeight(19)),
+      padding: EdgeInsets.only(bottom: setHeight(14), top: setHeight(14)),
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(width: 1, color: ColorUtils.underlined))),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
+        // crossAxisAlignment: CrossAxisAlignment.baseline,
         children: [
           Image.asset(getAssetsIcon(imageUrl),
               height: setHeight(19), width: setWidth(17)),
@@ -386,14 +351,6 @@ class _UserProfileViewState extends State<UserProfileView> {
   upLoadImage(Asset asset) async {
     final filePath =
         await FlutterAbsolutePath.getAbsolutePath(asset.identifier);
-    //todo test
-    // final metaData = await asset.metadata;
-    // print("metadata:" + metaData.exif.dateTimeOriginal??"ko có thông tin");
-    // final createDate = FileStat.statSync(filePath).modified;
-    // print("ngày tạo: " + filePath + createDate.toString());
-//     print("-----------" + asset.originalCreateDate.toString());
-//     Duration duration = DateTime.now().difference(asset.originalCreateDate);
-// print("${duration.inMinutes}");
     if (filePath != null) {
       File file;
       if (filePath.toLowerCase().endsWith("heic")) {
@@ -408,7 +365,7 @@ class _UserProfileViewState extends State<UserProfileView> {
         Utilities.showToast(context, "Có lỗi khi tải ảnh");
         return;
       }
-      // ignore: unrelated_type_equality_checks
+      // // ignore: unrelated_type_equality_checks
       UploadImageBloc().uploadFileMultiPart(bufferFile, file).then(
         (response) async {
           if (response.data.ErrorCode == AppConstants.ERROR_CODE_SUCCESS) {
@@ -429,25 +386,6 @@ class _UserProfileViewState extends State<UserProfileView> {
         },
       );
     }
-    // final bytes = File(filePath).readAsBytesSync();
-    // String img64 = base64Encode(bytes);
-    // UploadImageBloc().uploadFile(filePath, img64).then((response) async {
-    //   if (response.ErrorCode == AppConstants.ERROR_CODE_SUCCESS) {
-    //     if (response.Data.length > 0) {
-    //       String imgPath = await AppUtils.shared
-    //           .pushWidgetValueReturn(context, UpdateAvatar(response.Data[0]));
-    //       if (imgPath != null && imgPath.isNotEmpty) {
-    //         setState(() {});
-    //       }
-    //     }
-    //   } else {
-    //     Utilites.showToast(
-    //         context,
-    //         (response.ErrorMessage ?? "").isEmpty
-    //             ? response.ErrorCode
-    //             : response.ErrorMessage);
-    //   }
-    // });
   }
   @override
   void dispose() {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamo/blocs/task/reward_history_tab_view_bloc.dart';
-import 'package:mamo/model/remote/full_month_request.dart';
 import 'package:mamo/model/user/transaction_history_model.dart';
 import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/utils/font_utils.dart';

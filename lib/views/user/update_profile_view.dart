@@ -371,8 +371,7 @@ class UpdateProfileViewState extends State<UpdateProfileView>
   }
 
 
-  Future<Null> _selectDate(
-      BuildContext context, TextEditingController txtController) async {
+  Future<Null> _selectDate(BuildContext context, TextEditingController txtController) async {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),

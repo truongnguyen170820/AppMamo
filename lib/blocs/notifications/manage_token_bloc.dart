@@ -28,7 +28,7 @@ class ManageTokenBloc implements Bloc {
       } else if (data.status == Status.SUCCESS) {
         JDIResponse response = data.data;
         if (response != null &&
-            response.ErrorCode == AppConstants.API_UPDATE_DEVICE_SUCCESS) {
+            response.ErrorCode == "000000") {
           prefs.setString(
               AppConstants.PREF_DEVICE_TOKEN, json.encode(token.toJson()));
         } else {

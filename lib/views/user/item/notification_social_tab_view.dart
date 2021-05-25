@@ -140,48 +140,6 @@ class _NotificationSocialTabViewState extends State<NotificationSocialTabView> {
       ],
     );
   }
-  // Widget getNotifyTitle(RecentReward notify) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text('Nhận thưởng quay số',
-  //           style: TextStyle(
-  //               fontFamily: 'SFUIText',
-  //               color: ColorUtils.BG_COLOR,
-  //               fontSize: setSp(13),
-  //               fontWeight: FontWeight.bold)),
-  //       SizedBox(height: setHeight(3),),
-  //       RichText(
-  //         textAlign: TextAlign.justify,
-  //         text: TextSpan(
-  //           text: 'Thợ săn ',
-  //           style: TextStyles.common_text.copyWith(fontWeight: FontWeight.normal),
-  //           children: [
-  //             TextSpan(
-  //                 text: notify.fullName ?? notify.userName + ' ',
-  //                 style: TextStyle(
-  //                     // fontWeight: FontWeight.bold,
-  //                     fontFamily: 'SFUIText',
-  //                     color: ColorUtils.BG_COLOR,
-  //                     fontSize: setSp(12))),
-  //             TextSpan(text: ' đã quay được ', style: TextStyles.common_text.copyWith(fontWeight: FontWeight.normal)),
-  //             TextSpan(
-  //                 text: nf.format(notify.amount) + 'đ ',
-  //                 style: TextStyle(
-  //                     // fontWeight: FontWeight.bold,
-  //                     fontFamily: 'SFUIText',
-  //                     color: ColorUtils.BG_COLOR,
-  //                     fontSize: setSp(12))),
-  //             TextSpan(
-  //                 text: getDifferentTimeFromNow(notify.transationTimeStr) + '.',
-  //                 style: TextStyles.common_text.copyWith(fontWeight: FontWeight.normal)),
-  //           ],
-  //         ),
-  //       ),
-  //       SizedBox(height: setHeight(3),),
-  //     ],
-  //   );
-  // }
 
   @override
   void dispose() {

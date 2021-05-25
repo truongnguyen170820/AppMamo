@@ -176,10 +176,9 @@ class _MainViewState extends State<MainView> {
                 margin: EdgeInsets.only(
                     left: setWidth(16),
                     right: setWidth(16),
-                    top: setHeight(9),
                     bottom: setHeight(9)),
                 child: Text(
-                  "Cộng động độc giả",
+                  "Cộng đồng độc giả",
                   style: FontUtils.MEDIUM.copyWith(fontSize: setSp(16)),
                 ),
               ),
@@ -325,7 +324,7 @@ class _MainViewState extends State<MainView> {
               controller.refreshCompleted();
           }
           return Container(
-              height: setWidth(382),
+              height: setWidth(425),
               width: double.infinity,
               child: SmartRefresher(
                   onRefresh: _refreshPage,
@@ -341,7 +340,6 @@ class _MainViewState extends State<MainView> {
           border: Border(top: BorderSide(color: ColorUtils.underlined))),
       width: double.infinity,
       margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16)),
-      // padding: EdgeInsets.only(left: setWidth(16), right: setWidth(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -375,9 +373,9 @@ class _MainViewState extends State<MainView> {
           Column(
             children: [
               SizedBox(height: setHeight(10)),
-              SizedBox(
-                height: 12,
-              ),
+              // SizedBox(
+              //   height: 12,
+              // ),
               _buildItemTutorial("Đọc truyện", ontap1: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => HelpView()));
@@ -396,12 +394,11 @@ class _MainViewState extends State<MainView> {
                     MaterialPageRoute(builder: (context) => HelpView()));
               }),
               Container(
-                margin: EdgeInsets.only(top: setHeight(8)),
+                margin: EdgeInsets.only(top: setHeight(8), bottom: setHeight(8)),
                 height: setHeight(1),
                 width: 343,
                 color: ColorUtils.gray,
               ),
-              SizedBox(height: setHeight(16)),
             ],
           )
         ],

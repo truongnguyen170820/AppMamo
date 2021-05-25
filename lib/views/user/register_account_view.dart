@@ -29,7 +29,10 @@ class RegisterAccountViewState extends State<RegisterAccountView>
   TextEditingController _txtRepeatPwd = TextEditingController();
   RegisterAccountBloc registerAccountBloc = RegisterAccountBloc();
   ProgressDialog progressDialog;
-  bool isTicker = false;
+
+  bool checkPass  = false;
+  bool checkRetypePass  = false;
+  bool checkIcon = false;
 
   @override
   void initState() {
@@ -156,6 +159,9 @@ class RegisterAccountViewState extends State<RegisterAccountView>
                       Container(
                         width: setWidth(310),
                         child: TextField(
+                          onChanged: (data){
+                            checkPassword(_txtNewPwd, _txtRepeatPwd);
+                          },
                           controller: _txtNewPwd,
                           textAlign: TextAlign.start,
                           textAlignVertical: TextAlignVertical.bottom,
@@ -163,6 +169,7 @@ class RegisterAccountViewState extends State<RegisterAccountView>
                           style: FontUtils.MEDIUM.copyWith(color: ColorUtils.NUMBER_PAGE),
                           decoration: InputDecoration(
                             hintText: '●●●●●●●',
+                            suffix: checkPass ? Icon(Icons.check,color: ColorUtils.colorTextLogo) : SizedBox(),
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(4),
@@ -193,6 +200,9 @@ class RegisterAccountViewState extends State<RegisterAccountView>
                       Container(
                         width: setWidth(310),
                         child: TextField(
+                          onChanged: (data){
+                            checkRetypePassword(_txtRepeatPwd, _txtNewPwd);
+                          },
                           style: FontUtils.MEDIUM.copyWith(color: ColorUtils.NUMBER_PAGE),
                           controller: _txtRepeatPwd,
                           textAlign: TextAlign.start,
@@ -200,6 +210,7 @@ class RegisterAccountViewState extends State<RegisterAccountView>
                           obscureText: true,
                           decoration: InputDecoration(
                             hintText: '●●●●●●●',
+                            suffix: checkRetypePass ? Icon(Icons.check,color: ColorUtils.colorTextLogo,) : SizedBox(),
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(4),
@@ -231,6 +242,50 @@ class RegisterAccountViewState extends State<RegisterAccountView>
       ),
     );
   }
+  checkPassword(TextEditingController controller, TextEditingController subCtrl) {
+    if (subCtrl.text.length == 0 || subCtrl.text == null) {
+      if (controller.text.length >= 6) {
+        setState(() {
+          checkPass = true;
+        });
+      } else {
+        setState(() {
+          checkPass = false;
+        });
+      };
+    }
+    else {
+      if (controller.text.length >= 6) {
+        if(controller.text == subCtrl.text){
+          setState(() {
+            checkPass = true;
+            checkRetypePass = true;
+          });
+        } else {
+          setState(() {
+            checkPass = true;
+            checkRetypePass = false;
+          });
+        }
+
+      } else {
+        setState(() {
+          checkPass = false;
+        });
+      };
+    }
+  }
+  checkRetypePassword(TextEditingController controller,TextEditingController subCtrl){
+    if(controller.text == subCtrl.text && controller.text.length >5){
+      setState(() {
+        checkRetypePass = true;
+      });
+    } else {
+      setState(() {
+        checkRetypePass = false;
+      });
+    };
+  }
   Future<String> _getId() async {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) { // import 'dart:io'
@@ -241,24 +296,6 @@ class RegisterAccountViewState extends State<RegisterAccountView>
       return androidDeviceInfo.androidId; // unique ID on Android
     }
   }
-
-  checkTicker(){
-    setState(() {
-    });
-    return
-      _txtNewPwd.text.isNotEmpty ?
-      // isTicker == true ?
-      Icon(Icons.check, color: ColorUtils.colorTextLogo) :  SizedBox() ;
-  }
-  checkTick(){
-    setState(() {
-    });
-    return
-    _txtRepeatPwd.text.isNotEmpty && _txtRepeatPwd.text == _txtNewPwd.text ?
-      // isTicker == true ?
-      Icon(Icons.check, color: ColorUtils.colorTextLogo) : SizedBox();
-  }
-
 
   void registerAccount() async{
     FocusScope.of(context).requestFocus(FocusNode());

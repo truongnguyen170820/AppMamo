@@ -7,7 +7,6 @@ import 'package:mamo/blocs/impl/stream_event.dart';
 import 'package:mamo/blocs/user/get_account_bloc.dart';
 import 'package:mamo/blocs/user/request_pay_bloc.dart';
 import 'package:mamo/blocs/user/withdrawal_history_tab_view_bloc.dart';
-import 'package:mamo/model/remote/full_month_request.dart';
 import 'package:mamo/model/user/transaction_history_model.dart';
 import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/utils/font_utils.dart';
@@ -400,36 +399,36 @@ class _AchievementsBoardState extends State<AchievementsBoard> implements ApiRes
       return '';
     }
   }
-  fitterData(){
-    DateTime pastDay;
-    DateTime recentDay;
-    setState(() {
-      if(selected == 0){
-        fromDate = "${dateTimeNow.day}/${dateTimeNow.month}/${dateTimeNow.year}";
-        toDate = "${dateTimeNow.day}/${dateTimeNow.month}/${dateTimeNow.year}";
-        bloc.getWithdrawalHistory(pageIndex, pageSize);
-      }else if(selected == 1){
-        pastDay = dateTimeNow.subtract(Duration(days: dateTimeNow.weekday + 6));
-        fromDate = "${pastDay.day}/${pastDay.month}/${pastDay.year}";
-        recentDay = dateTimeNow.subtract(Duration(days: dateTimeNow.weekday));
-        toDate = "${recentDay.day}/${recentDay.month}/${recentDay.year}";
-        bloc.getWithdrawalHistory(pageIndex, pageSize);
-      }else if(selected == 2){
-        if (dateTimeNow.month > 1) {
-          fromDate = FullMonthRequest((dateTimeNow.month - 1), dateTimeNow.year)
-              .toMap()["FromDateStr"];
-          toDate = FullMonthRequest((dateTimeNow.month - 1), dateTimeNow.year)
-              .toMap()["ToDateStr"];
-        } else {
-          fromDate = "01/12/${dateTimeNow.year - 1}";
-          toDate = "31/12/${dateTimeNow.year - 1}";
-        }
-        bloc.getWithdrawalHistory(pageIndex, pageSize);
-      }else{
-
-      }
-    });
-  }
+  // fitterData(){
+  //   DateTime pastDay;
+  //   DateTime recentDay;
+  //   setState(() {
+  //     if(selected == 0){
+  //       fromDate = "${dateTimeNow.day}/${dateTimeNow.month}/${dateTimeNow.year}";
+  //       toDate = "${dateTimeNow.day}/${dateTimeNow.month}/${dateTimeNow.year}";
+  //       bloc.getWithdrawalHistory(pageIndex, pageSize);
+  //     }else if(selected == 1){
+  //       pastDay = dateTimeNow.subtract(Duration(days: dateTimeNow.weekday + 6));
+  //       fromDate = "${pastDay.day}/${pastDay.month}/${pastDay.year}";
+  //       recentDay = dateTimeNow.subtract(Duration(days: dateTimeNow.weekday));
+  //       toDate = "${recentDay.day}/${recentDay.month}/${recentDay.year}";
+  //       bloc.getWithdrawalHistory(pageIndex, pageSize);
+  //     }else if(selected == 2){
+  //       if (dateTimeNow.month > 1) {
+  //         fromDate = FullMonthRequest((dateTimeNow.month - 1), dateTimeNow.year)
+  //             .toMap()["FromDateStr"];
+  //         toDate = FullMonthRequest((dateTimeNow.month - 1), dateTimeNow.year)
+  //             .toMap()["ToDateStr"];
+  //       } else {
+  //         fromDate = "01/12/${dateTimeNow.year - 1}";
+  //         toDate = "31/12/${dateTimeNow.year - 1}";
+  //       }
+  //       bloc.getWithdrawalHistory(pageIndex, pageSize);
+  //     }else{
+  //
+  //     }
+  //   });
+  // }
 
   @override
   void onError(String message) {

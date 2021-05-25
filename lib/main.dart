@@ -42,6 +42,8 @@ NotificationAppLaunchDetails notificationAppLaunchDetails;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   notificationAppLaunchDetails =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
@@ -65,7 +67,6 @@ void main() async {
       initializationSettingsAndroid, initializationSettingsIOS);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: null);
-  await Firebase.initializeApp();
 
   //add firebase crashlytics
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
@@ -80,8 +81,8 @@ void main() async {
   runZonedGuarded<Future<void>>(() async {
     // ...
   }, FirebaseCrashlytics.instance.recordError);
-  if (kDebugMode)
-    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+  // if (kDebugMode)
+  //   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
       .then((_) {
     runApp(MyApp());

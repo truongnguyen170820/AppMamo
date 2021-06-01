@@ -40,12 +40,6 @@ class RequestPayViewState extends State<RequestPayView> with ApiResultListener {
     'Mobifone',
     'Viettel',
   ];
-  List<String> gameCardListLabel = [
-    'Garena',
-    'Zing',
-    'V-coin',
-  ];
-  String gameCardName;
   int gameCardValue;
   String telcoName;
   int amount;
@@ -59,7 +53,6 @@ class RequestPayViewState extends State<RequestPayView> with ApiResultListener {
     _txtBalance.text = nf.format(widget.balance);
     _txtMomoAccount.text = GlobalCache().loginData.momoMobile;
     requestPayBloc.init(this);
-    gameCardName = gameCardListLabel[0];
   }
 
   @override
@@ -320,120 +313,6 @@ class RequestPayViewState extends State<RequestPayView> with ApiResultListener {
                       ),
                     ],
                   ),
-                // if (payType == 3)
-                //   Column(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       Text(
-                //         'Chọn thẻ game',
-                //         style: TextStyles.common_text,
-                //       ),
-                //       SizedBox(
-                //         height: setHeight(10),
-                //       ),
-                //       Container(
-                //         height: setHeight(35),
-                //         width: double.infinity,
-                //         padding: EdgeInsets.only(left: setWidth(10)),
-                //         decoration: BoxDecoration(
-                //           border: Border.all(
-                //             color: ColorUtils.BG_COLOR,
-                //           ),
-                //           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                //         ),
-                //         child: DropdownButtonHideUnderline(
-                //           child: DropdownButton(
-                //             value: gameCardName,
-                //             icon: Icon(Icons.keyboard_arrow_down),
-                //             onChanged: (String newValue) {
-                //               setState(() {
-                //                 gameCardName = newValue;
-                //                 gameCardValue= null;
-                //               });
-                //             },
-                //             items: [0, 1, 2]
-                //                 .map<DropdownMenuItem<String>>((int value) {
-                //               return DropdownMenuItem<String>(
-                //                 value: gameCardListLabel[value],
-                //                 child: Text(
-                //                   gameCardListLabel[value],
-                //                   style: TextStyles.common_text,
-                //                 ),
-                //               );
-                //             }).toList(),
-                //           ),
-                //         ),
-                //       ),
-                //       SizedBox(
-                //         height: setHeight(15),
-                //       ),
-                //       Text(
-                //         'Mệnh giá thẻ',
-                //         style: TextStyles.common_text,
-                //       ),
-                //       SizedBox(
-                //         height: setHeight(10),
-                //       ),
-                //       Container(
-                //         height: setHeight(35),
-                //         width: double.infinity,
-                //         padding: EdgeInsets.only(left: setWidth(10)),
-                //         decoration: BoxDecoration(
-                //           border: Border.all(
-                //             color: ColorUtils.BG_COLOR,
-                //           ),
-                //           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                //         ),
-                //         child: DropdownButtonHideUnderline(
-                //           child: DropdownButton(
-                //             value: gameCardValue,
-                //             icon: Icon(Icons.keyboard_arrow_down),
-                //             onChanged: (int newValue) {
-                //               setState(() {
-                //                 gameCardValue = newValue;
-                //               });
-                //             },
-                //             items: (gameCardName == "Garena")
-                //                 ? [
-                //                     DropdownMenuItem<int>(
-                //                       value: 20000,
-                //                       child: Text(
-                //                         '20,000',
-                //                         style: TextStyles.common_text,
-                //                       ),
-                //                     ),
-                //                   ]
-                //                 : (gameCardName == "Zing")
-                //                     ? [
-                //                         DropdownMenuItem<int>(
-                //                           value: 20000,
-                //                           child: Text(
-                //                             '20,000',
-                //                             style: TextStyles.common_text,
-                //                           ),
-                //                         ),
-                //                       ]
-                //                     : [
-                //                         DropdownMenuItem<int>(
-                //                           value: 10000,
-                //                           child: Text(
-                //                             '10,000',
-                //                             style: TextStyles.common_text,
-                //                           ),
-                //                         ),
-                //                         DropdownMenuItem<int>(
-                //                           value: 20000,
-                //                           child: Text(
-                //                             '20,000',
-                //                             style: TextStyles.common_text,
-                //                           ),
-                //                         ),
-                //                       ],
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
                 SizedBox(
                   height: setHeight(15),
                 ),
@@ -512,12 +391,6 @@ class RequestPayViewState extends State<RequestPayView> with ApiResultListener {
                     style: FontUtils.NORMAL.copyWith(color: ColorUtils.NUMBER_PAGE),
                     textAlign: TextAlign.justify,
                   ),
-                // if (payType == 3)
-                //   Text(
-                //     "Mã thẻ game sẽ được chúng tôi gửi tới ứng dụng ở trong mục Thông báo/Giao dịch và Lịch sử giao dịch/Rút tiền",
-                //     style: FontUtils.NORMAL.copyWith(color: ColorUtils.NUMBER_PAGE),
-                //     textAlign: TextAlign.justify,
-                //   ),
                 SizedBox(
                   height: setHeight(20),
                 ),
@@ -533,9 +406,6 @@ class RequestPayViewState extends State<RequestPayView> with ApiResultListener {
                     title: "GỬI YÊU CẦU",
                     textStyle: FontUtils.MEDIUM.copyWith(color: ColorUtils.WHITE),
                   ),
-
-
-                  // SimpleButton('Gửi yêu cầu', requestPay),
                 ),
               ],
             ),
@@ -546,8 +416,6 @@ class RequestPayViewState extends State<RequestPayView> with ApiResultListener {
   }
 
   void requestPay() {
-    // Navigator.pushReplacement(context,
-    //     MaterialPageRoute(builder: (context) => RequestPaySuccess(amount)));
     if (widget.payType == 1) {
       if (GlobalCache().loginData.momoMobile == null ||
           GlobalCache().loginData.momoMobile.isEmpty ||
@@ -606,29 +474,6 @@ class RequestPayViewState extends State<RequestPayView> with ApiResultListener {
           payType: widget.payType,
           telcoName: telcoName));
     }
-    // if (payType == 3) {
-    //   if (gameCardName == null || gameCardName.isEmpty) {
-    //     Utilities.showToast(context, 'Bạn chưa chọn loại thẻ game');
-    //     return;
-    //   }
-    //   if (gameCardValue == null) {
-    //     Utilities.showToast(context, 'Bạn chưa chọn mệnh giá thẻ');
-    //     return;
-    //   }
-    //   if (gameCardValue > widget.balance) {
-    //     Utilities.showToast(context, 'Mệnh giá thẻ không hợp lệ');
-    //     return;
-    //   }
-    //   if (_passController.text != GlobalCache().userPassword) {
-    //     Utilities.showToast(context, "Mật khẩu không đúng");
-    //     return;
-    //   }
-    //   progressDialog.show().whenComplete(() => requestPayBloc.requestPay(
-    //       amount: gameCardValue,
-    //       dayRequest: DateTime.now().toString(),
-    //       payType: payType,
-    //       telcoName: gameCardName));
-    // }
   }
 
   void updateMomoInfo() {

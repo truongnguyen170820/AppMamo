@@ -23,22 +23,7 @@ class _MonetizationHistoryState extends State<MonetizationHistory> {
  int pageIndex = 1;
  bool isLoading = false;
  NumberFormat nf = NumberFormat("###,###,###", "en_US");
-
- // RefreshController controller = RefreshController();
  bool isRefesh=false;
- // DateTime dateTimeNow=DateTime.now();
- // DateFormat formatter = DateFormat('dd/MM/yyyy');
- // todatDate(){
- //   DateTime dateTime = DateTime.now();
- //   String formatterDate = formatter.format(dateTime);
- //   print(formatterDate);
- //   return formatterDate;
- // }
- // List<int> itemDropdown = List<int>.generate(3, (index) => index);
- // List<String> labelDropdown = ["Hôm nay", "Tuần này", "Tháng này"];
- // int selected = 0;
- // String fromDate ;
- // String toDate;
 
  @override
   void initState() {
@@ -46,7 +31,6 @@ class _MonetizationHistoryState extends State<MonetizationHistory> {
     super.initState();
     blocReward.initListener(context);
     blocReward.getRewardHistory();
-    // todatDate();
   }
 
   @override
@@ -71,15 +55,6 @@ class _MonetizationHistoryState extends State<MonetizationHistory> {
                 );
               }else{
                 return
-                  // SmartRefresher(
-                  // controller: controller,
-                  // enablePullDown: true,
-                  // header: CustomHeader(builder:(context, mode){
-                  //   return customLoading;
-                  // }
-                  // ),
-                  // // child: SingleChildScrollView(
-                  //   child:
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -94,36 +69,6 @@ class _MonetizationHistoryState extends State<MonetizationHistory> {
                               Text("Tổng: " +
                                   Utilities.formatMoney( sum??"", suffix: 'đ')
                                 , style: FontUtils.BOLD.copyWith(color: ColorUtils.TEXT_PRICE),),
-                              // Spacer(),
-                              // Container(
-                              //   height: setHeight(30),
-                              //   width: setWidth(112),
-                              //   padding: EdgeInsets.only(left: setWidth(12), right: setWidth(12), ),
-                              //   decoration: BoxDecoration(
-                              //       borderRadius: BorderRadius.circular(12),
-                              //       border: Border.all(color: ColorUtils.TEXT_NAME, width: 1)
-                              //   ),
-                              //   child: DropdownButtonHideUnderline(
-                              //     child: DropdownButton(
-                              //         icon: Icon(Icons.keyboard_arrow_down,color: ColorUtils.TEXT_NAME,size: 14,),
-                              //         value: selected,
-                              //         items: itemDropdown.map<DropdownMenuItem<int>>((int value) {
-                              //           return DropdownMenuItem(
-                              //             value: value,
-                              //             child: Text("${labelDropdown[value]}",
-                              //                 style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(12) )),
-                              //           );
-                              //         }).toList(),
-                              //         onChanged: (int index){
-                              //          setState(() {
-                              //            rewardList.clear();
-                              //            selected = index;
-                              //            fitterData();
-                              //          });
-                              //           // rewardList = [];
-                              //         }),
-                              //   ),
-                              // )
                             ],
                           ),
                         ),
@@ -179,9 +124,6 @@ class _MonetizationHistoryState extends State<MonetizationHistory> {
          return Text("Đọc báo" , style: FontUtils.MEDIUM.copyWith(color: ColorUtils.NUMBER_PAGE, fontSize: setSp(12)));
        }
      default:
-       // {
-       //   return Text("Chưa đọc gì" , style: FontUtils.MEDIUM.copyWith(color: ColorUtils.NUMBER_PAGE, fontSize: setSp(12)));
-       // }
    }
  }
 
@@ -203,7 +145,6 @@ class _MonetizationHistoryState extends State<MonetizationHistory> {
            mainAxisAlignment: MainAxisAlignment.center,
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
-             // Container(child: getNameType(transaction?.rewardType??"")),
              Text(transaction.rewardType == 1 ?"đọc truyện" : "đọc báo",
                  maxLines: 2,
                  overflow: TextOverflow.clip,
@@ -250,33 +191,4 @@ class _MonetizationHistoryState extends State<MonetizationHistory> {
      return '';
    }
  }
- // fitterData(){
- //   DateTime pastDay;
- //   DateTime recentDay;
- //   setState(() {
- //     if(selected == 0){
- //       fromDate = "${dateTimeNow.day}/${dateTimeNow.month}/${dateTimeNow.year}";
- //       toDate = "${dateTimeNow.day}/${dateTimeNow.month}/${dateTimeNow.year}";
- //       blocReward.getRewardHistory(pageIndex, pageSize);
- //     }else if(selected == 1){
- //       pastDay = dateTimeNow.subtract(Duration(days: dateTimeNow.weekday -1));
- //       fromDate = "${pastDay.day}/${pastDay.month}/${pastDay.year}";
- //       recentDay = dateTimeNow.subtract(Duration(days:7 - dateTimeNow.weekday));
- //       toDate = "${recentDay.day}/${recentDay.month}/${recentDay.year}";
- //       blocReward.getRewardHistory(pageIndex, pageSize);
- //     }else if(selected == 2){
- //       if (dateTimeNow.month > 1) {
- //         fromDate = FullMonthRequest((dateTimeNow.month - 1), dateTimeNow.year)
- //             .toMap()["FromDateStr"];
- //         toDate = FullMonthRequest((dateTimeNow.month - 1), dateTimeNow.year)
- //             .toMap()["ToDateStr"];
- //       } else {
- //         fromDate = "01/12/${dateTimeNow.year - 1}";
- //         fromDate = "01/12/${dateTimeNow.year - 1}";
- //         toDate = "31/12/${dateTimeNow.year - 1}";
- //       }
- //       blocReward.getRewardHistory(pageIndex, pageSize);
- //     }
- //   });
- // }
 }

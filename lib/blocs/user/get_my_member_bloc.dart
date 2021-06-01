@@ -10,7 +10,7 @@ import 'package:mamo/utils/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MyMemberBloc implements Bloc {
+class MyMemberBloc  implements Bloc {
   Subject _subject = BehaviorSubject<ApiResponse<JDIResponse>>();
   StreamController _getMyMemberStreamCtrl =
       StreamController<List<MyMemberModel>>();

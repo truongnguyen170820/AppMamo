@@ -112,11 +112,6 @@ class RegisterPhoneViewState extends State<RegisterPhoneView> {
       Utilities.showToast(context, 'Số điện thoại không hợp lệ');
       return;
     }
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => RegisterAccountView(
-    //             _txtPhoneNumber.text.trim())));
   }
 
   @override

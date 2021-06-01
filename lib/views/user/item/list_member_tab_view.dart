@@ -19,7 +19,7 @@ class ListMemberTabView extends StatefulWidget {
 class _ListMemberTabViewState extends State<ListMemberTabView> {
   NumberFormat nf = NumberFormat("###,###,###", "en_US");
   MyMemberBloc bloc = MyMemberBloc();
-  final int pageSize = 20;
+  final int pageSize = 100;
   int pageIndex = 1;
   bool isLoading = false;
   List<MyMemberModel> memberList = [];
@@ -90,15 +90,6 @@ backgroundColor: ColorUtils.WHITE,
                             }),
                       ),
                     ),
-                    // Container(
-                    //   height: isLoading ? 50.0 : 0,
-                    //   color: Colors.transparent,
-                    //   child: Center(
-                    //     child: CircularProgressIndicator(
-                    //       valueColor: AlwaysStoppedAnimation(ColorUtils.colorTextLogo),
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 );
             } else

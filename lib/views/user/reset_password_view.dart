@@ -161,8 +161,6 @@ class ResetPasswordViewState extends State<ResetPasswordView>
       Utilities.showToast(context, 'Độ dài mật khẩu cần lớn hơn 5 ký tự');
       return;
     }
-  //   progressDialog.show().whenComplete(() => resetPasswordBloc.resetPassword(
-  //       '0' + widget.mobile.substring(3, 12), _txtNewPwd.text));
   }
 
   @override

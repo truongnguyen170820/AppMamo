@@ -87,7 +87,8 @@ Widget transAppBar(BuildContext context, String title) {
 
 
 
-Widget appbarDefault(BuildContext context, String title, {Color bgColor, List<Widget> actions,bool isShowLeading=true,bool isCenterTitle=true, dynamic result }) {
+Widget appbarDefault(BuildContext context, String title, {Color bgColor, List<Widget> actions,bool isShowLeading=true
+  ,bool isCenterTitle=true, dynamic result }) {
   return AppBar(
     leading:isShowLeading? IconButton(
       onPressed: () => pop(context,result:result ),

@@ -40,14 +40,6 @@ class _TopHunterViewState extends State<TopHunterView>
         ),
         backgroundColor: ColorUtils.WHITE,
         centerTitle: true,
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //     image: DecorationImage(
-        //       image: AssetImage("assets/images/appbar_bg.png"),
-        //       fit: BoxFit.fill,
-        //     ),
-        //   ),
-        // ),
         textTheme: TextTheme(
             headline6: TextStyle(color: Colors.white, fontSize: setSp(17))),
         iconTheme: IconThemeData(color: Colors.white),
@@ -62,12 +54,6 @@ class _TopHunterViewState extends State<TopHunterView>
                 child: Text('Ngày',
                     style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(15)),
                     textAlign: TextAlign.center)),
-            // Container(
-            //     alignment: Alignment.topCenter,
-            //     height: setHeight(30),
-            //     child: Text('Tuần',
-            //         style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(15)),
-            //         textAlign: TextAlign.center)),
             Container(
                 alignment: Alignment.topCenter,
                 height: setHeight(30),
@@ -87,7 +73,6 @@ class _TopHunterViewState extends State<TopHunterView>
       body: TabBarView(
         children: [
           TopHunterTabView(1),
-          // TopHunterTabView(4),
           TopHunterTabView(2),
           TopHunterTabView(3),
         ],

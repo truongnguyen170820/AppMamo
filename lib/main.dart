@@ -162,16 +162,6 @@ class _MyAppState extends State<MyApp> {
         return MediaQuery(data: data, child: child);
       },
       home: SplashView(),
-      // home: StreamBuilder<ApiResponse<UserLogInModel>>(
-      //   stream: authenBloc.subjectAuthenData.stream,
-      //   builder: (context, snapshot) {
-      //     final response = snapshot.data;
-      //     if (response != null && response.status == Status.SUCCESS) {
-      //       return SigninAccountView();
-      //     }
-      //     return SplashView();
-      //   },
-      // ),
     );
   }
   @override

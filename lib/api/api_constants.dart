@@ -1,6 +1,4 @@
 class ApiConstants {
-  //CAY KHE APP
-
   static const String BASE_URL = "http://maychu.share4seo.com:8000/api";
   static const String BASE_IMAGE_URL = "http://maychu.share4seo.com:8000/";
   static const String SIGNIN_ACCOUNT = "/aktuser/login";

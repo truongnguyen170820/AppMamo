@@ -50,7 +50,6 @@ class RegisterAccountViewState extends State<RegisterAccountView>
       ),
     );
     registerAccountBloc.init(this);
-    // _txtMobile.text = widget.mobile;
   }
 
   @override

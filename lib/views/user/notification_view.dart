@@ -43,25 +43,11 @@ class _NotificationViewState extends State<NotificationView>
           style: FontUtils.MEDIUM.copyWith(color: ColorUtils.NUMBER_PAGE),
         ),
         centerTitle: true,
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //     image: DecorationImage(
-        //       image: AssetImage(getAssetsIcon("ticked.png")),
-        //       fit: BoxFit.fill,
-        //     ),
-        //   ),
-        // ),
         elevation: 0.0,
         bottom: TabBar(
           indicatorColor: ColorUtils.colorTextLogo,
           indicatorWeight: 3.0,
           tabs: [
-            // Container(
-            //     alignment: Alignment.topCenter,
-            //     height: setHeight(30),
-            //     child: Text('Nhiệm vụ',
-            //         style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(15)),
-            //         textAlign: TextAlign.center)),
             Container(
                 alignment: Alignment.topCenter,
                 height: setHeight(30),
@@ -139,10 +125,7 @@ class _NotificationViewState extends State<NotificationView>
       ),
       body: TabBarView(
         children: [
-          // NotificationTabView(2),
           NotifiTabDealPage(1),
-          // NotificationTabView(1),
-          // NotificationSocialTabView(),
           NotificationTab(),
 
         ],

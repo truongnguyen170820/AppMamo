@@ -12,15 +12,13 @@ import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/utils/global_cache.dart';
 import 'package:mamo/views/user/achievements_page.dart';
 import 'package:mamo/views/user/invitation_code_view.dart';
+import 'package:mamo/views/user/item/list_member_page.dart';
 import 'package:mamo/views/user/item/list_member_tab_view.dart';
 import 'package:mamo/views/user/item/reward_history_tab_view.dart';
-import 'package:mamo/views/user/list_member_view.dart';
 import 'package:mamo/views/user/monetization_history_page.dart';
 import 'package:mamo/views/user/signin_account_view.dart';
-import 'package:mamo/views/user/submit_invitation_code_view.dart';
 import 'package:mamo/views/user/task/help_view/help_view.dart';
 import 'package:mamo/views/user/top_hunter_view.dart';
-import 'package:mamo/views/user/transaction_history_view.dart';
 import 'package:mamo/views/user/user_profile_view.dart';
 import 'package:mamo/widget/circle_avatar.dart';
 import 'package:mamo/widget/custombutton.dart';
@@ -107,7 +105,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => MonetizationHistory()));
                     }),
                     _buildItemMenu("Thành viên cấp dưới", "member.png", ontap: (){
-                      pushTo(context, ListMemberTabView());
+                      pushTo(context, ListMemberPage());
                       // Navigator.push(context, MaterialPageRoute(builder: (context)=> ListMemberTabView()));
                     }),
                     _buildItemMenu("Hướng dẫn kiếm tiền", "tutorial.png", ontap: (){

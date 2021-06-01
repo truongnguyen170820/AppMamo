@@ -1,3 +1,5 @@
+
+
 import 'dart:async';
 
 import 'package:mamo/api/api_constants.dart';
@@ -8,30 +10,29 @@ import 'package:mamo/blocs/impl/bloc.dart';
 import 'package:mamo/blocs/impl/event_type.dart';
 import 'package:mamo/blocs/impl/stream_event.dart';
 import 'package:mamo/model/request/base_response.dart';
-import 'package:mamo/model/user/recent_reward_model.dart';
+import 'package:mamo/model/user/my_member_model.dart';
 import 'package:mamo/utils/app_constant.dart';
 import 'package:rxdart/rxdart.dart';
 
-class GetRecentRewardBloc1 extends BaseListBlock<RecentReward>  implements Bloc {
-
-  StreamController<StreamEvent<RecentReward>> _eventControllers =
+class GetMemberBloc extends BaseListBlock<MyMemberModel> implements Bloc{
+  StreamController<StreamEvent<MyMemberModel>> _eventControllers =
   StreamController.broadcast();
 
-  Stream<StreamEvent<RecentReward>> get getEventStream =>
+  Stream<StreamEvent<MyMemberModel>> get getEventStream =>
       _eventControllers.stream;
 
-  Subject requestListHistoryBooking =
+  Subject _subjectMember =
   BehaviorSubject<ApiResponse<JDIResponse>>();
 
   requestListener() {
-    requestListHistoryBooking.listen((data) {
+    _subjectMember.listen((data) {
       if (data.status == Status.SUCCESS) {
         requestFinished();
 
         JDIResponse response = data.data;
         if (response != null && response.ErrorCode == "000000") {
-          List<RecentReward> result =
-          response.Data.map((e) => RecentReward.fromJson(e)).toList();
+          List<MyMemberModel> result =
+          response.Data.map((e) => MyMemberModel.fromJson(e)).toList();
           setList(result, AppConstants.PAGE_SIZE);
           increasePage();
           _eventControllers.sink
@@ -60,25 +61,22 @@ class GetRecentRewardBloc1 extends BaseListBlock<RecentReward>  implements Bloc 
       }
     });
   }
-
   getListHistoryBooking({bool isRefresh = false}) {
     if (isRequesting()) return;
     if (isRefresh) refreshPage();
-    // var data = Map<String, dynamic>();
-    // data["DepartmentIdStr"] =
-    //     AppCache().memberData.departmentDefaultInfo.departmentIdStr;
-    // data["PageIndex"] = pageIndex;
-    // data["PageSize"] = AppConstants.PAGE_SIZE;
     requestStarted();
     ApiService(
-        ApiConstants.GET_RECENT_REWARDS,{}, requestListHistoryBooking)
+        ApiConstants.GET_MY_MEMBER,
+      {"PageIndex": pageIndex, "PageSize": AppConstants.PAGE_SIZE,
+    }, _subjectMember)
         .execute();
+    // requestFinished();
   }
   @override
   void dispose() {
     _eventControllers.close();
-    requestListHistoryBooking.close();
+    _subjectMember.close();
     // TODO: implement dispose
   }
-}
 
+}

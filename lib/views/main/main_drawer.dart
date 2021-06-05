@@ -13,7 +13,6 @@ import 'package:mamo/utils/global_cache.dart';
 import 'package:mamo/views/user/achievements_page.dart';
 import 'package:mamo/views/user/invitation_code_view.dart';
 import 'package:mamo/views/user/item/list_member_page.dart';
-import 'package:mamo/views/user/item/list_member_tab_view.dart';
 import 'package:mamo/views/user/item/reward_history_tab_view.dart';
 import 'package:mamo/views/user/monetization_history_page.dart';
 import 'package:mamo/views/user/signin_account_view.dart';

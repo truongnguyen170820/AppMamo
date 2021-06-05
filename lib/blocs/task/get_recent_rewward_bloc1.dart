@@ -64,11 +64,6 @@ class GetRecentRewardBloc1 extends BaseListBlock<RecentReward>  implements Bloc 
   getListHistoryBooking({bool isRefresh = false}) {
     if (isRequesting()) return;
     if (isRefresh) refreshPage();
-    // var data = Map<String, dynamic>();
-    // data["DepartmentIdStr"] =
-    //     AppCache().memberData.departmentDefaultInfo.departmentIdStr;
-    // data["PageIndex"] = pageIndex;
-    // data["PageSize"] = AppConstants.PAGE_SIZE;
     requestStarted();
     ApiService(
         ApiConstants.GET_RECENT_REWARDS,{}, requestListHistoryBooking)

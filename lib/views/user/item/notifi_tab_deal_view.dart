@@ -57,7 +57,7 @@ class _NotifiTabDealPageState extends State<NotifiTabDealPage> {
             height: 100,
             alignment: Alignment.center,
             child: Text(
-              "Danh sách giao dịch trống!",
+              "Danh sách thưởng nhiệm vụ trống!",
               style: FontUtils.MEDIUM.copyWith(fontSize: setSp(14)),
             ),
           ) :

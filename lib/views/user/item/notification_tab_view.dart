@@ -1,6 +1,6 @@
 import 'package:mamo/api/api_constants.dart';
 import 'package:mamo/api/api_service.dart';
-import 'package:mamo/blocs/notifications/notification_bloc.dart';
+import 'package:mamo/blocs/impl/notifications/notification_bloc.dart';
 import 'package:mamo/model/notification/notification_model.dart';
 import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/widget/global.dart';

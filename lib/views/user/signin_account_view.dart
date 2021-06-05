@@ -1,5 +1,6 @@
 import "dart:io";
 import 'package:mamo/blocs/impl/api_result_listener.dart';
+import 'package:mamo/blocs/impl/notifications/manage_token_bloc.dart';
 import 'package:mamo/blocs/user/authen_bloc.dart';
 import 'package:mamo/utils/font_utils.dart';
 import 'package:mamo/utils/global_cache.dart';
@@ -8,7 +9,6 @@ import 'package:mamo/views/user/register_phone_number_view.dart';
 import 'package:mamo/views/user/forgot_password_view.dart';
 import 'package:mamo/widget/custombutton.dart';
 import 'package:mamo/widget/global.dart';
-import 'package:mamo/blocs/notifications/manage_token_bloc.dart';
 import 'package:mamo/utils/text_styles.dart';
 import 'package:mamo/utils/app_constant.dart';
 import 'package:mamo/utils/color_utils.dart';

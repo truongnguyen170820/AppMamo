@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamo/blocs/impl/event_type.dart';
 import 'package:mamo/blocs/impl/stream_event.dart';
 import 'package:mamo/blocs/task/get_recent_rewward_bloc1.dart';
+import 'package:mamo/blocs/user/readers_bloc.dart';
+import 'package:mamo/model/user/recent_reward_model.dart';
 import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/utils/font_utils.dart';
 import 'package:mamo/widget/circle_avatar.dart';
@@ -10,7 +13,7 @@ import 'package:mamo/widget/custom_loading.dart';
 import 'package:mamo/widget/fail_widget.dart';
 import 'package:mamo/widget/global.dart';
 import 'package:mamo/widget/loading_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NotificationTab extends StatefulWidget {
   @override
@@ -18,125 +21,110 @@ class NotificationTab extends StatefulWidget {
 }
 
 class _NotificationTabState extends State<NotificationTab> {
-  GetRecentRewardBloc1 getRecentRewardBloc = GetRecentRewardBloc1();
-  RefreshController controller = RefreshController();
+  ReadersBloc getRecentRewardBloc = ReadersBloc();
   NumberFormat nf = NumberFormat("###,###,###", "en_US");
+  List<RecentReward> listRecentReward = [];
 
   @override
   void initState() {
-    getRecentRewardBloc.getListHistoryBooking();
-    getRecentRewardBloc.requestListener();
+    getRecentRewardBloc.getReaderList();
     // TODO: implement initState
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: getRecentRewardBloc.getEventStream,
+      stream: getRecentRewardBloc.getReaderStream,
       initialData: StreamEvent(eventType: StreamEventType.Loading),
       builder: (context, snapshot) {
-        var recentRewardList = snapshot.data;
-        if (recentRewardList.data == null) return LoadingWidget();
-        switch (recentRewardList.eventType) {
-          case StreamEventType.Loading:
-            return LoadingWidget();
-            break;
-          case StreamEventType.Error:
-            return InkWell(
-              child: FailWidget(mess: recentRewardList.message),
-              onTap: () => getRecentRewardBloc.getListHistoryBooking(),
-            );
-            break;
-          case StreamEventType.Loaded:
-            controller.refreshCompleted();
-        }
-        return getRecentRewardBloc.listData.length == 0 ?
-        Container(
-          height: 100,
-          alignment: Alignment.center,
-          child: Text(
-            "Danh sách cộng đồng trống!",
-            style: FontUtils.MEDIUM.copyWith(fontSize: setSp(14)),
-          ),
-        ) :
-        Container(
-          width: double.infinity,
-          height: setHeight(180),
-          color: ColorUtils.WHITE,
-          child: SmartRefresher(
-            controller: controller,
-            enablePullDown: true,
-            header: CustomHeader(
-              builder: (context, mode) {
-                return customLoading;
-              },
-            ),
-            onRefresh: () {
-              _refreshPage();
-            },
-            child: ListView.builder(
-
-                physics: BouncingScrollPhysics(),
-                itemCount: getRecentRewardBloc.listData.length,
-                itemBuilder: (context, index){
-                  var itemList = getRecentRewardBloc.listData[index];
-                  if (getRecentRewardBloc.canLoadMore(index, getRecentRewardBloc.getListLength())) {
-                    getRecentRewardBloc.getListHistoryBooking();
-                    return customLoading;
-                  }
-                  return Container(
-                    margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16), top: setHeight(9), bottom: setHeight(9)),
-                    height: setHeight(48),
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        circleAvatar(
-                            "", itemList.fullName ?? "",
-                            radius: 25),
-                        SizedBox(width: setWidth(8)),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: setWidth(200),
-                              child: Text(
-                                  (itemList.fullName ??
-                                      itemList.userName) +
-                                      " vừa ${itemList.readType == 1 ? "đọc truyện" : "đọc báo"} ",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.clip,
-                                  style: FontUtils.MEDIUM.copyWith(
-                                      fontSize: setSp(12),
-                                      color: ColorUtils.NUMBER_PAGE)),
-                            ),
-                            Text(
-                              getDifferentTimeFromNow(
-                                  itemList.transationTimeStr ??
-                                      ""),
-                              style: FontUtils.NORMAL.copyWith(
-                                  fontSize: setSp(11),
-                                  color: ColorUtils.TEXT_NAME),
-                            )
-                          ],
-                        ),
-                        Spacer(),
-                        Text(
-                            "+ ${nf.format(itemList.amount ?? "")}đ",
-                            style: FontUtils.BOLD.copyWith(
-                                fontSize: setSp(12),
-                                color: ColorUtils.colorTextLogo))
-                      ],
-                    ),
-                  );
-                }),
-          ),
-        );
+       if(snapshot.hasData){
+         StreamEvent notifi = snapshot.data;
+         switch (notifi.eventType) {
+           case StreamEventType.Loading:
+             return LoadingWidget();
+             break;
+           case StreamEventType.Error:
+             return InkWell(
+               child: FailWidget(mess: notifi.message),
+               onTap: () => getRecentRewardBloc.getReaderList(),
+             );
+             break;
+           case StreamEventType.Loaded:
+             listRecentReward = getRecentRewardBloc.listData;
+             return  RefreshIndicator(
+               onRefresh: _refreshPage,
+               child: ListView.builder(
+                   physics: BouncingScrollPhysics(),
+                   itemCount: getRecentRewardBloc.getListLength(),
+                   itemBuilder: (context, index){
+                     if (getRecentRewardBloc.canLoadMore(index, getRecentRewardBloc.getListLength())) {
+                       getRecentRewardBloc.getReaderList();
+                       return customLoading;
+                     }
+                     return Container(
+                       margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16), top: setHeight(9), bottom: setHeight(9)),
+                       height: setHeight(48),
+                       width: double.infinity,
+                       child: Row(
+                         children: [
+                           circleAvatar(
+                               "", listRecentReward[index].fullName ?? "",
+                               radius: 25),
+                           SizedBox(width: setWidth(8)),
+                           Column(
+                             mainAxisAlignment: MainAxisAlignment.center,
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             children: [
+                               Container(
+                                 width: setWidth(200),
+                                 child: Text(
+                                     (listRecentReward[index].fullName ??
+                                         listRecentReward[index].userName) +
+                                         " vừa ${listRecentReward[index].readType == 1 ? "đọc truyện" : "đọc báo"} ",
+                                     maxLines: 2,
+                                     overflow: TextOverflow.clip,
+                                     style: FontUtils.MEDIUM.copyWith(
+                                         fontSize: setSp(12),
+                                         color: ColorUtils.NUMBER_PAGE)),
+                               ),
+                               Text(
+                                 getDifferentTimeFromNow(
+                                     listRecentReward[index].transationTimeStr ??
+                                         ""),
+                                 style: FontUtils.NORMAL.copyWith(
+                                     fontSize: setSp(11),
+                                     color: ColorUtils.TEXT_NAME),
+                               )
+                             ],
+                           ),
+                           Spacer(),
+                           Text(
+                               "+ ${nf.format(listRecentReward[index].amount ?? "")}đ",
+                               style: FontUtils.BOLD.copyWith(
+                                   fontSize: setSp(12),
+                                   color: ColorUtils.colorTextLogo))
+                         ],
+                       ),
+                     );
+                   }),
+             );
+             break;
+         }
+         return Center(
+             child: CupertinoActivityIndicator(
+               radius: 15,
+             ));
+       }
+       else {
+         return Center(
+           child: Text('Không cộng đồng'),
+         );
+       }
       },
     );
   }
-  _refreshPage() {
-    getRecentRewardBloc.getListHistoryBooking( isRefresh: true);
+  Future<Null> _refreshPage() async {
+   await getRecentRewardBloc.getReaderList( isRefresh: true);
   }
 
   String getDifferentTimeFromNow(String pastTime) {
@@ -159,7 +147,6 @@ class _NotificationTabState extends State<NotificationTab> {
   }
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
   }
 }

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mamo/blocs/impl/event_type.dart';
+import 'package:mamo/blocs/impl/notifications/get_notification_count_blog.dart';
 import 'package:mamo/blocs/impl/stream_event.dart';
-import 'package:mamo/blocs/notifications/get_notification_count_blog.dart';
 import 'package:mamo/blocs/task/get_recent_rewward_bloc1.dart';
 import 'package:mamo/blocs/task/reading/get_home_bloc.dart';
 import 'package:mamo/blocs/task/reading/taskReadBloc.dart';
+import 'package:mamo/blocs/user/readers_bloc.dart';
 import 'package:mamo/model/user/home_statistic_model.dart';
 import 'package:mamo/model/user/recent_reward_model.dart';
 import 'package:mamo/utils/font_utils.dart';
@@ -24,7 +25,7 @@ import 'package:mamo/widget/custombutton.dart';
 import 'package:mamo/widget/fail_widget.dart';
 import 'package:mamo/widget/global.dart';
 import 'package:mamo/widget/loading_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'main_drawer.dart';
 
 class MainView extends StatefulWidget {
@@ -33,13 +34,12 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  GetRecentRewardBloc1 bloc = GetRecentRewardBloc1();
-  GetHomeBloc blocHome = GetHomeBloc();
+  ReadersBloc bloc = ReadersBloc();
+  HomeBloc homeBloc = HomeBloc();
   TaskReadBloc taskReadBloc = TaskReadBloc();
   dynamic data;
   double maxWidth;
   NumberFormat nf = NumberFormat("###,###,###", "en_US");
-  RefreshController controller = RefreshController();
   bool isReading = false;
   int type = 1;
   List<RecentReward> rewardList = [];
@@ -51,10 +51,8 @@ class _MainViewState extends State<MainView> {
     NotificationCountBloc().checkMQTTDisconnect();
     taskReadBloc.getTaskModel(type);
     taskReadBloc.init();
-    bloc.getListHistoryBooking();
-    bloc.requestListener();
-    blocHome.getHome();
-    blocHome.requestListener();
+    bloc.getReaderList();
+    homeBloc.getHomeList();
   }
 
   @override
@@ -305,33 +303,40 @@ class _MainViewState extends State<MainView> {
   }
   Widget _buildBody() {
     return StreamBuilder(
-        stream: blocHome.getEventStream,
+        stream: homeBloc.getHomeStream,
         initialData: StreamEvent(eventType: StreamEventType.Loading),
         builder: (context, snapshot) {
-          var home = snapshot.data;
-          if (home.data == null) return LoadingWidget();
-          switch (home.eventType) {
-            case StreamEventType.Loading:
-              return LoadingWidget();
-              break;
-            case StreamEventType.Error:
-              return InkWell(
-                child: FailWidget(mess: home.message),
-                onTap: () => blocHome.getHome(),
-              );
-              break;
-            case StreamEventType.Loaded:
-              controller.refreshCompleted();
-          }
-          return Container(
-              height: setWidth(425),
-              width: double.infinity,
-              child: SmartRefresher(
-                  onRefresh: _refreshPage,
-                  controller: controller,
-                  child: _buildBodyPage(context,
-                      homeStatisticModel: blocHome.listData.first)));
-        });
+         if(snapshot.hasData){
+           StreamEvent home = snapshot.data;
+           switch (home.eventType) {
+             case StreamEventType.Loading:
+               return LoadingWidget();
+               break;
+             case StreamEventType.Error:
+               return InkWell(
+                 child: FailWidget(mess: home.message),
+                 onTap: () => homeBloc.getHomeList(),
+               );
+               break;
+             case StreamEventType.Loaded:
+               return Container(
+                   height: setWidth(425),
+                   width: double.infinity,
+                   child:_buildBodyPage(context,
+                       homeStatisticModel: homeBloc.listData.first));
+               break;
+           }
+           return Center(
+               child: CupertinoActivityIndicator(
+                 radius: 15,
+               ));
+         }else {
+           return Center(
+             child: Text(''),
+           );
+         }
+        }
+        );
   }
   Widget _buildBodyPage(BuildContext context, {HomeStatisticModel homeStatisticModel}) {
     return Container(
@@ -407,109 +412,99 @@ class _MainViewState extends State<MainView> {
   }
   Widget _buildPeople() {
     return StreamBuilder(
-      // stream: getRecentRewardBloc.getRecentRewardStream,
-      stream: bloc.getEventStream,
+      stream: bloc.getReaderStream,
       initialData: StreamEvent(eventType: StreamEventType.Loading),
       builder: (context, snapshot) {
-        var recentRewardList = snapshot.data;
-        if (recentRewardList.data == null) return LoadingWidget();
-        switch (recentRewardList.eventType) {
-          case StreamEventType.Loading:
-            return LoadingWidget();
-            break;
-          case StreamEventType.Error:
-            return InkWell(
-              child: FailWidget(mess: recentRewardList.message),
-              onTap: () => bloc.getListHistoryBooking(),
-            );
-            break;
-          case StreamEventType.Loaded:
-            controller.refreshCompleted();
-        }
-        return bloc.listData.length == 0
-            ? Container(
-                height: 100,
-                alignment: Alignment.center,
-                child: Text(
-                  "Lịch sử độc giả trống!",
-                  style: FontUtils.MEDIUM.copyWith(fontSize: setSp(14)),
-                ),
-              )
-            : Container(
-                width: double.infinity,
-                height: setHeight(180),
-                child: SmartRefresher(
-                  controller: controller,
-                  enablePullDown: true,
-                  header: CustomHeader(
-                    builder: (context, mode) {
-                      return customLoading;
-                    },
-                  ),
-                  // onRefresh: _refreshPage,
-                  onRefresh: () {
-                    _refreshPage();
-                  },
-                  child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: bloc.listData.length,
-                      itemBuilder: (context, index) {
-                        var itemList = bloc.listData[index];
-                        if (bloc.canLoadMore(index, bloc.getListLength())) {
-                          bloc.getListHistoryBooking();
-                          return customLoading;
-                        }
-                        return Container(
-                          margin: EdgeInsets.only(
-                              left: setWidth(16),
-                              right: setWidth(16),
-                              top: setHeight(9),
-                              bottom: setHeight(9)),
-                          height: setHeight(48),
-                          color: ColorUtils.WHITE,
-                          width: double.infinity,
-                          child: Row(
-                            children: [
-                              circleAvatar("", itemList.fullName ?? "",
-                                  radius: 25),
-                              SizedBox(width: setWidth(8)),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: setWidth(200),
-                                    child: Text(
-                                        (itemList.fullName ??
-                                                itemList.userName) +
-                                            " vừa ${itemList.readType == 1 ? "đọc truyện" : "đọc báo"} ",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.clip,
-                                        style: FontUtils.MEDIUM.copyWith(
-                                            fontSize: setSp(12),
-                                            color: ColorUtils.NUMBER_PAGE)),
-                                  ),
-                                  Text(
-                                    getDifferentTimeFromNow(
-                                        itemList.transationTimeStr ?? ""),
-                                    style: FontUtils.NORMAL.copyWith(
-                                        fontSize: setSp(11),
-                                        color: ColorUtils.TEXT_NAME),
-                                  )
-                                ],
-                              ),
-                              Spacer(),
-                              Text("+ ${nf.format(itemList.amount ?? "")}đ",
-                                  style: FontUtils.BOLD.copyWith(
-                                      fontSize: setSp(12),
-                                      color: ColorUtils.colorTextLogo))
-                            ],
-                          ),
-                        );
-                      }),
-                ),
+        if(snapshot.hasData){
+          var recentRewardList = snapshot.data;
+          switch (recentRewardList.eventType) {
+            case StreamEventType.Loading:
+              return LoadingWidget();
+              break;
+            case StreamEventType.Error:
+              return InkWell(
+                child: FailWidget(mess: recentRewardList.message),
+                onTap: () => bloc.getReaderList(),
               );
+              break;
+            case StreamEventType.Loaded:
+              rewardList = bloc.listData;
+              return Container(
+                  width: double.infinity,
+                  height: setHeight(180),
+                  child: RefreshIndicator(
+                    onRefresh: _refreshPage,
+                    child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        itemCount: bloc.getListLength(),
+                        itemBuilder: (context, index) {
+                          if (bloc.canLoadMore(index, bloc.getListLength())) {
+                            bloc.getReaderList();
+                            return customLoading;
+                          }
+                          return Container(
+                            margin: EdgeInsets.only(
+                                left: setWidth(16),
+                                right: setWidth(16),
+                                top: setHeight(9),
+                                bottom: setHeight(9)),
+                            height: setHeight(48),
+                            color: ColorUtils.WHITE,
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                circleAvatar("", rewardList[index].fullName ?? "",
+                                    radius: 25),
+                                SizedBox(width: setWidth(8)),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: setWidth(200),
+                                      child: Text(
+                                          (rewardList[index].fullName ??
+                                              rewardList[index].userName) +
+                                              " vừa ${rewardList[index].readType == 1 ? "đọc truyện" : "đọc báo"} ",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.clip,
+                                          style: FontUtils.MEDIUM.copyWith(
+                                              fontSize: setSp(12),
+                                              color: ColorUtils.NUMBER_PAGE)),
+                                    ),
+                                    Text(
+                                      getDifferentTimeFromNow(
+                                          rewardList[index].transationTimeStr ?? ""),
+                                      style: FontUtils.NORMAL.copyWith(
+                                          fontSize: setSp(11),
+                                          color: ColorUtils.TEXT_NAME),
+                                    )
+                                  ],
+                                ),
+                                Spacer(),
+                                Text("+ ${nf.format(rewardList[index].amount ?? "")}đ",
+                                    style: FontUtils.BOLD.copyWith(
+                                        fontSize: setSp(12),
+                                        color: ColorUtils.colorTextLogo))
+                              ],
+                            ),
+                          );
+                        }),
+                  )
+              );
+              break;
+          }
+          return Center(
+              child: CupertinoActivityIndicator(
+                radius: 15,
+              ));
+        } else {
+          return Center(
+            child: Text('Không cộng đồng độc giả'),
+          );
+        }
+
       },
     );
   }
@@ -605,13 +600,13 @@ class _MainViewState extends State<MainView> {
   }
 
   Future<Null> _refreshPage() async {
-    bloc.getListHistoryBooking(isRefresh: true);
-    blocHome.getHome(isRefresh: true);
+    bloc.getReaderList(isRefresh: true);
+    homeBloc.getHomeList(isRefresh: true);
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    // controller.dispose();
     super.dispose();
   }
 }

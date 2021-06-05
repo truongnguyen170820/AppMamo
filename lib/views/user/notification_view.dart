@@ -5,7 +5,6 @@ import 'package:mamo/utils/text_styles.dart';
 import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/views/user/item/notifi_tab.dart';
 import 'package:mamo/views/user/item/notifi_tab_deal_view.dart';
-import 'package:mamo/views/user/item/notification_social_tab_view.dart';
 import 'package:mamo/views/user/item/notification_tab_view.dart';
 import 'package:mamo/widget/global.dart';
 import 'package:flutter/material.dart';

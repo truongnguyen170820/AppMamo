@@ -1,16 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamo/blocs/impl/event_type.dart';
+import 'package:mamo/blocs/impl/notifications/noti_bloc.dart';
 import 'package:mamo/blocs/impl/stream_event.dart';
-import 'package:mamo/blocs/notifications/notifi_bloc.dart';
-import 'package:mamo/blocs/notifications/notification_bloc.dart';
+import 'package:mamo/model/notification/notification_model.dart';
 import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/utils/font_utils.dart';
 import 'package:mamo/widget/custom_loading.dart';
 import 'package:mamo/widget/fail_widget.dart';
 import 'package:mamo/widget/global.dart';
 import 'package:mamo/widget/loading_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NotifiTabDealPage extends StatefulWidget {
   final int type;
@@ -21,125 +21,115 @@ class NotifiTabDealPage extends StatefulWidget {
 }
 
 class _NotifiTabDealPageState extends State<NotifiTabDealPage> {
-  NotificationBloc1 bloc = NotificationBloc1();
-  RefreshController controller = RefreshController();
+  // NotificationBloc1 bloc = NotificationBloc1();
+  NotifiBloc bloc = NotifiBloc();
   NumberFormat nf = NumberFormat("###,###,###", "en_US");
+  List<NotificationModel> notifiList = [];
 
   @override
   void initState() {
     bloc.getNotification(widget.type);
-    bloc.requestListener();
+    // bloc.requestListener();
     // TODO: implement initState
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: bloc.getNotificationStream,
+        stream: bloc.getNotifiStream,
         initialData: StreamEvent(eventType: StreamEventType.Loading),
         builder: (context, snapshot){
-          var notifi = snapshot.data;
-          if (notifi.data == null) return LoadingWidget();
-          switch (notifi.eventType) {
-            case StreamEventType.Loading:
-              return LoadingWidget();
-              break;
-            case StreamEventType.Error:
-              return InkWell(
-                child: FailWidget(mess: notifi.message),
-                onTap: () => notifi.getListHistoryBooking(),
-              );
-              break;
-            case StreamEventType.Loaded:
-              controller.refreshCompleted();
-          }
-          return bloc.listData.length == 0 ?  Container(
-            height: 100,
-            alignment: Alignment.center,
-            child: Text(
-              "Danh sách thưởng nhiệm vụ trống!",
-              style: FontUtils.MEDIUM.copyWith(fontSize: setSp(14)),
-            ),
-          ) :
-              Container(
-                width: double.infinity,
-                height: setHeight(180),
-                color: ColorUtils.WHITE,
-                child: SmartRefresher(
-                  controller: controller,
-                  enablePullDown: true,
-                  header: CustomHeader(
-                    builder: (context, mode) {
-                      return customLoading;
-                    },
-                  ),
-                  onRefresh: () {
-                    _refreshPage();
-                  },
-                  child:  ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: bloc.listData.length,
-                      itemBuilder: (context, index){
-                        var itemList = bloc.listData[index];
-                        if (bloc.canLoadMore(index, bloc.getListLength())) {
-                          bloc.getNotification(widget.type);
-                          return customLoading;
-                        }
-                        return GestureDetector(
-                          onTap: (){
-                            showDetail(itemList.title??"", itemList.content??"");
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16)),
-                            padding: EdgeInsets.only(top: setHeight(8), bottom: setHeight(8)),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: ColorUtils.underlined,
-                                  width: 2
-                                )
-                              )
-                            ),
-                            child: Row(
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(right: setWidth(10)),
-                                    padding: EdgeInsets.all(9),
-                                    decoration: BoxDecoration(
-                                        color: ColorUtils.colorStatus,
-                                        borderRadius: BorderRadius.circular(12)
-                                    ),
-                                    child:
-                                    Image.asset(getAssetsIcon("readbook.png"), color: ColorUtils.BG_ICOn,width: setWidth(20),height: setHeight(14),)
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(itemList.title??"", style: FontUtils.MEDIUM.copyWith(color: ColorUtils.NUMBER_PAGE, fontSize: setSp(13)),),
-                                    Container(
-                                      margin: EdgeInsets.only(bottom: setHeight(3), top: setHeight(3)),
-                                      width: setWidth(290),
-                                      child: Text(itemList.content??"", style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(12)),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Text("${itemList.createdTimeStr??""}", style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(12)),)
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                  }) ,
-                ),
-              );
+         if(snapshot.hasData){
+           StreamEvent notifi = snapshot.data;
+           switch (notifi.eventType) {
+             case StreamEventType.Loading:
+               return LoadingWidget();
+               break;
+             case StreamEventType.Error:
+               return InkWell(
+                 child: FailWidget(mess: notifi.message),
+                 onTap: () => bloc.getNotification(widget.type),
+               );
+               break;
+             case StreamEventType.Loaded:
+               notifiList = bloc.listData;
+               return RefreshIndicator(
+                 onRefresh: _refreshPage,
+                 child: ListView.builder(
+                     physics: BouncingScrollPhysics(),
+                     itemCount: bloc.getListLength(),
+                     itemBuilder: (context, index){
+                       if (bloc.canLoadMore(index, bloc.getListLength())) {
+                         bloc.getNotification(widget.type);
+                         return customLoading;
+                       }
+                       return GestureDetector(
+                         onTap: (){
+                           showDetail(notifiList[index].title??"", notifiList[index].content??"");
+                         },
+                         child: Container(
+                           margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16)),
+                           padding: EdgeInsets.only(top: setHeight(8), bottom: setHeight(8)),
+                           decoration: BoxDecoration(
+                               border: Border(
+                                   bottom: BorderSide(
+                                       color: ColorUtils.underlined,
+                                       width: 2
+                                   )
+                               )
+                           ),
+                           child: Row(
+                             // crossAxisAlignment: CrossAxisAlignment.start,
+                             children: [
+                               Container(
+                                   margin: EdgeInsets.only(right: setWidth(10)),
+                                   padding: EdgeInsets.all(9),
+                                   decoration: BoxDecoration(
+                                       color: ColorUtils.colorStatus,
+                                       borderRadius: BorderRadius.circular(12)
+                                   ),
+                                   child:
+                                   Image.asset(getAssetsIcon("readbook.png"), color: ColorUtils.BG_ICOn,width: setWidth(20),height: setHeight(14),)
+                               ),
+                               Column(
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 children: [
+                                   Text(notifiList[index].title??"", style: FontUtils.MEDIUM.copyWith(color: ColorUtils.NUMBER_PAGE, fontSize: setSp(13)),),
+                                   Container(
+                                     margin: EdgeInsets.only(bottom: setHeight(3), top: setHeight(3)),
+                                     width: setWidth(290),
+                                     child: Text(notifiList[index].content??"", style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(12)),
+                                       maxLines: 2,
+                                       overflow: TextOverflow.ellipsis,
+                                     ),
+                                   ),
+                                   Text("${notifiList[index].createdTimeStr??""}", style: FontUtils.NORMAL.copyWith(color: ColorUtils.TEXT_NAME, fontSize: setSp(12)),)
+                                 ],
+                               )
+                             ],
+                           ),
+                         ),
+                       );
+                     }),
+               );
+               break;
+           }
+           return Center(
+               child: CupertinoActivityIndicator(
+                 radius: 15,
+               ));
+         }
+         else {
+           return Center(
+             child: Text('Không thưởng nhiệm vụ'),
+           );
+         }
+
         });
   }
 
-  _refreshPage() {
+  Future<Null> _refreshPage() async{
     bloc.getNotification(widget.type, isRefresh: true);
   }
   showDetail(String title, String content) {

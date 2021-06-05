@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamo/blocs/impl/event_type.dart';
 import 'package:mamo/blocs/impl/stream_event.dart';
-import 'package:mamo/blocs/user/get_my_member_bloc.dart';
 import 'package:mamo/blocs/user/member_bloc.dart';
 import 'package:mamo/model/user/my_member_model.dart';
 import 'package:mamo/utils/color_utils.dart';
@@ -14,7 +13,6 @@ import 'package:mamo/widget/custom_loading.dart';
 import 'package:mamo/widget/fail_widget.dart';
 import 'package:mamo/widget/global.dart';
 import 'package:mamo/widget/loading_widget.dart';
-// import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ListMemberPage extends StatefulWidget {
   @override
@@ -22,16 +20,15 @@ class ListMemberPage extends StatefulWidget {
 }
 
 class _ListMemberPageState extends State<ListMemberPage> {
-  // GetMemberBloc bloc = GetMemberBloc();
   MemberBloc bloc = MemberBloc();
   List<MyMemberModel> listData;
   NumberFormat nf = NumberFormat("###,###,###", "en_US");
+  List<MyMemberModel> listMember;
   @override
   void initState() {
     // bloc.getListHistoryBooking();
     // bloc.requestListener();
     bloc.getMemberList();
-    listData = [];
     // TODO: implement initState
     super.initState();
   }

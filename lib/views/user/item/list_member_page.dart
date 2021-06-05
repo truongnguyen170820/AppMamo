@@ -20,16 +20,15 @@ class ListMemberPage extends StatefulWidget {
 }
 
 class _ListMemberPageState extends State<ListMemberPage> {
-  // GetMemberBloc bloc = GetMemberBloc();
-  MemberBloc blocMember = MemberBloc();
+  MemberBloc bloc = MemberBloc();
+  List<MyMemberModel> listData;
   NumberFormat nf = NumberFormat("###,###,###", "en_US");
   List<MyMemberModel> listMember;
   @override
   void initState() {
-    // bloc.getListMember();
-    // bloc.requestMember();
-    blocMember.getMemberList();
-    listMember = [];
+    // bloc.getListHistoryBooking();
+    // bloc.requestListener();
+    bloc.getMemberList();
     // TODO: implement initState
     super.initState();
   }
@@ -39,77 +38,72 @@ class _ListMemberPageState extends State<ListMemberPage> {
       appBar: appbarDefault(context, "Thành viên cấp dưới", bgColor: ColorUtils.WHITE),
       backgroundColor: ColorUtils.WHITE,
       body: StreamBuilder(
-        stream: blocMember.getMemberStream,
+        stream: bloc.getMemberStream,
           initialData: StreamEvent(eventType: StreamEventType.Loading),
           builder: (context, snapshot){
-            if(snapshot.hasData){
-              StreamEvent event = snapshot.data;
-              switch (event.eventType) {
-                case StreamEventType.Loading:
-                  return LoadingWidget();
-                  break;
-                case StreamEventType.Error:
-                  return InkWell(
-                    child: FailWidget(mess: event.message),
-                    onTap: () => blocMember.getMemberList(),
-                  );
-                  break;
-                case StreamEventType.Loaded:
-                  listMember = blocMember.listData;
-                  return Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16), bottom: setHeight(15)),
-                        padding: EdgeInsets.only(top: setHeight(17)),
-                        decoration: BoxDecoration(
-                            border: Border(top: BorderSide(
-                                width: 1, color: ColorUtils.gray
-                            ))
-                        ),
-                        child:
-                        Row(
-                          children: [
-                            Text("Tổng: ${blocMember.listData.length} thành viên", style: FontUtils.MEDIUM.copyWith(color: ColorUtils.TEXT_PRICE),),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: _refreshPage,
-                          child: ListView.builder(
-                              itemCount: blocMember.getListLength(),
-                              itemBuilder: (context, index) {
-                                if (blocMember.canLoadMore(index, blocMember.getListLength())) {
-                                  blocMember.getMemberList();
-                                  return customLoading;
-                                }
-                                return buildMemberTitle(listMember[index]);
-                              }),
-                        ),
-                      ),
-                      // ),
-                    ],
-                  );
-                  break;
-              }  return Center(
-                  child: CupertinoActivityIndicator(
-                    radius: 15,
-                  ));
-            }else {
-              return Center(
-                child: Text('Không thành viên cấp dưới'),
-              );
-            }
-
-
-
-
+         if(snapshot.hasData){
+           StreamEvent recentRewardList = snapshot.data;
+           switch (recentRewardList.eventType) {
+             case StreamEventType.Loading:
+               return LoadingWidget();
+               break;
+             case StreamEventType.Error:
+               return InkWell(
+                 child: FailWidget(mess: recentRewardList.message),
+                 onTap: () => bloc.getMemberList(),
+               );
+               break;
+             case StreamEventType.Loaded:
+               listData = bloc.listData;
+               return Column(
+                 children: [
+                   Container(
+                     margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16), bottom: setHeight(15)),
+                     padding: EdgeInsets.only(top: setHeight(17)),
+                     decoration: BoxDecoration(
+                         border: Border(top: BorderSide(
+                             width: 1, color: ColorUtils.gray
+                         ))
+                     ),
+                     child:
+                     Row(
+                       children: [
+                         Text("Tổng: ${bloc.listData.length} thành viên", style: FontUtils.MEDIUM.copyWith(color: ColorUtils.TEXT_PRICE),),
+                       ],
+                     ),
+                   ),
+                   Expanded(
+                     child: RefreshIndicator(
+                       onRefresh: _refreshPage,
+                       child: ListView.builder(
+                           itemCount: bloc.getListLength(),
+                           itemBuilder: (context, index) {
+                             if (bloc.canLoadMore(index, bloc.getListLength())) {
+                               bloc.getMemberList();
+                               return customLoading;
+                             }
+                             return buildMemberTitle(listData[index]);
+                           }),
+                     ),
+                   ),
+                 ],
+               );
+               break;
+           }
+           return Center(
+               child: CupertinoActivityIndicator(
+                 radius: 15,
+               ));
+         } else {
+           return Center(
+             child: Text('Không thành viên cấp dưới'),
+           );
+         }
       }),
     );
   }
-  Future<Null> _refreshPage() async{
-    blocMember.getMemberList(isRefresh: true);
-    return null;
+  Future<Null> _refreshPage() async {
+    bloc.getMemberList(isRefresh: true);
   }
   Widget buildMemberTitle(MyMemberModel member) {
     return Container(

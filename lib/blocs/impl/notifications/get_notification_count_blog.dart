@@ -5,8 +5,8 @@ import 'package:mamo/model/notification/notify_total_unread_model.dart';
 import 'package:mamo/utils/global_cache.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import '../impl/bloc.dart';
 
+import '../bloc.dart';
 class NotificationCountBloc implements Bloc {
   MqttServerClient client =
   MqttServerClient.withPort('broker.timesoft.vn', 'flutter_clien', 18883);

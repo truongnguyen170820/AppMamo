@@ -15,7 +15,6 @@ import 'package:mamo/views/splash_view.dart';
 import 'package:mamo/views/user/signin_account_view.dart';
 import 'package:mamo/widget/notification_global.dart';
 import 'package:path_provider/path_provider.dart';
-import 'blocs/notifications/get_notification_count_blog.dart';
 //
 Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
   if (message.containsKey('data')) {

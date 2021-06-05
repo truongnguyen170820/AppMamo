@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamo/blocs/impl/event_type.dart';
 import 'package:mamo/blocs/impl/stream_event.dart';
-import 'package:mamo/blocs/user/gget_member_bloc.dart';
+import 'package:mamo/blocs/user/get_my_member_bloc.dart';
+import 'package:mamo/blocs/user/member_bloc.dart';
 import 'package:mamo/model/user/my_member_model.dart';
 import 'package:mamo/utils/color_utils.dart';
 import 'package:mamo/utils/font_utils.dart';
@@ -12,7 +14,7 @@ import 'package:mamo/widget/custom_loading.dart';
 import 'package:mamo/widget/fail_widget.dart';
 import 'package:mamo/widget/global.dart';
 import 'package:mamo/widget/loading_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ListMemberPage extends StatefulWidget {
   @override
@@ -20,15 +22,16 @@ class ListMemberPage extends StatefulWidget {
 }
 
 class _ListMemberPageState extends State<ListMemberPage> {
-  GetMemberBloc bloc = GetMemberBloc();
-  RefreshController controller = RefreshController();
-  bool isLoading = false;
-  int pageIndex = 1;
+  // GetMemberBloc bloc = GetMemberBloc();
+  MemberBloc bloc = MemberBloc();
+  List<MyMemberModel> listData;
   NumberFormat nf = NumberFormat("###,###,###", "en_US");
   @override
   void initState() {
-    bloc.getListHistoryBooking();
-    bloc.requestListener();
+    // bloc.getListHistoryBooking();
+    // bloc.requestListener();
+    bloc.getMemberList();
+    listData = [];
     // TODO: implement initState
     super.initState();
   }
@@ -38,85 +41,72 @@ class _ListMemberPageState extends State<ListMemberPage> {
       appBar: appbarDefault(context, "Thành viên cấp dưới", bgColor: ColorUtils.WHITE),
       backgroundColor: ColorUtils.WHITE,
       body: StreamBuilder(
-        stream: bloc.getEventStream,
+        stream: bloc.getMemberStream,
           initialData: StreamEvent(eventType: StreamEventType.Loading),
           builder: (context, snapshot){
-            var recentRewardList = snapshot.data;
-            if (recentRewardList.data == null) return LoadingWidget();
-            switch (recentRewardList.eventType) {
-              case StreamEventType.Loading:
-                return LoadingWidget();
-                break;
-              case StreamEventType.Error:
-                return InkWell(
-                  child: FailWidget(mess: recentRewardList.message),
-                  onTap: () => bloc.getListHistoryBooking(),
-                );
-                break;
-              case StreamEventType.Loaded:
-                controller.refreshCompleted();
-            }
-            return Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16), bottom: setHeight(15)),
-                  padding: EdgeInsets.only(top: setHeight(17)),
-                  decoration: BoxDecoration(
-                      border: Border(top: BorderSide(
-                          width: 1, color: ColorUtils.gray
-                      ))
-                  ),
-                  child:
-                  Row(
-                    children: [
-                      Text("Tổng: ${bloc.listData.length} thành viên", style: FontUtils.MEDIUM.copyWith(color: ColorUtils.TEXT_PRICE),),
-                    ],
-                  ),
-                ),
-                // NotificationListener(
-                  // ignore: missing_return
-                  // onNotification: (ScrollNotification scrollInfo) {
-                  //   // if (!isLoading
-                  //   // // //     // &&
-                  //   // // //     // scrollInfo.metrics.pixels ==
-                  //   // // //     //     scrollInfo.metrics.maxScrollExtent
-                  //   // ) {
-                  //     // pageIndex = pageIndex ;
-                  //     isLoading = true;
-                  //
-                  //   // }
-                  //   bloc.getListHistoryBooking();
-                  // },
-                  // child:
-                  Expanded(
-                    child: SmartRefresher(
-                      controller: controller,
-                      onRefresh: _refreshPage,
-                      enablePullDown: true,
-                      child: SmartRefresher(
-                        controller: controller,
-                        enablePullDown: true,
-                        onRefresh: _refreshPage,
-                        child: ListView.builder(
-                            itemCount: bloc.listData.length,
-                            itemBuilder: (context, index) {
-                              if (bloc.canLoadMore(index, bloc.getListLength())) {
-                                bloc.getListHistoryBooking();
-                                return customLoading;
-                              }
-                              return buildMemberTitle(bloc.listData[index]);
-                            }),
-                      ),
-                    ),
-                  ),
-                // ),
-              ],
-            );
+         if(snapshot.hasData){
+           StreamEvent recentRewardList = snapshot.data;
+           switch (recentRewardList.eventType) {
+             case StreamEventType.Loading:
+               return LoadingWidget();
+               break;
+             case StreamEventType.Error:
+               return InkWell(
+                 child: FailWidget(mess: recentRewardList.message),
+                 onTap: () => bloc.getMemberList(),
+               );
+               break;
+             case StreamEventType.Loaded:
+               listData = bloc.listData;
+               return Column(
+                 children: [
+                   Container(
+                     margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16), bottom: setHeight(15)),
+                     padding: EdgeInsets.only(top: setHeight(17)),
+                     decoration: BoxDecoration(
+                         border: Border(top: BorderSide(
+                             width: 1, color: ColorUtils.gray
+                         ))
+                     ),
+                     child:
+                     Row(
+                       children: [
+                         Text("Tổng: ${bloc.listData.length} thành viên", style: FontUtils.MEDIUM.copyWith(color: ColorUtils.TEXT_PRICE),),
+                       ],
+                     ),
+                   ),
+                   Expanded(
+                     child: RefreshIndicator(
+                       onRefresh: _refreshPage,
+                       child: ListView.builder(
+                           itemCount: bloc.getListLength(),
+                           itemBuilder: (context, index) {
+                             if (bloc.canLoadMore(index, bloc.getListLength())) {
+                               bloc.getMemberList();
+                               return customLoading;
+                             }
+                             return buildMemberTitle(listData[index]);
+                           }),
+                     ),
+                   ),
+                 ],
+               );
+               break;
+           }
+           return Center(
+               child: CupertinoActivityIndicator(
+                 radius: 15,
+               ));
+         } else {
+           return Center(
+             child: Text('Không thành viên cấp dưới'),
+           );
+         }
       }),
     );
   }
   Future<Null> _refreshPage() async {
-    bloc.getListHistoryBooking(isRefresh: true);
+    bloc.getMemberList(isRefresh: true);
   }
   Widget buildMemberTitle(MyMemberModel member) {
     return Container(

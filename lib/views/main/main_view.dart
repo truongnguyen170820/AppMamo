@@ -173,8 +173,9 @@ class _MainViewState extends State<MainView> {
               Container(
                 margin: EdgeInsets.only(
                     left: setWidth(16),
+                    top: setHeight(8),
                     right: setWidth(16),
-                    bottom: setHeight(9)),
+                    bottom: setHeight(8)),
                 child: Text(
                   "Cộng đồng độc giả",
                   style: FontUtils.MEDIUM.copyWith(fontSize: setSp(16)),
@@ -320,7 +321,7 @@ class _MainViewState extends State<MainView> {
                break;
              case StreamEventType.Loaded:
                return Container(
-                   height: setWidth(425),
+                   // height: setWidth(425),
                    width: double.infinity,
                    child:_buildBodyPage(context,
                        homeStatisticModel: homeBloc.listData.first));
@@ -436,12 +437,8 @@ class _MainViewState extends State<MainView> {
                     onRefresh: _refreshPage,
                     child: ListView.builder(
                         physics: BouncingScrollPhysics(),
-                        itemCount: bloc.getListLength(),
+                        itemCount: rewardList.length,
                         itemBuilder: (context, index) {
-                          if (bloc.canLoadMore(index, bloc.getListLength())) {
-                            bloc.getReaderList();
-                            return customLoading;
-                          }
                           return Container(
                             margin: EdgeInsets.only(
                                 left: setWidth(16),

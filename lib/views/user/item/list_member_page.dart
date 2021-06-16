@@ -96,7 +96,7 @@ class _ListMemberPageState extends State<ListMemberPage> {
                ));
          } else {
            return Center(
-             child: Text('Không thành viên cấp dưới'),
+             child: Text('Không có thành viên cấp dưới'),
            );
          }
       }),

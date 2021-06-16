@@ -367,7 +367,7 @@ class SigninAccountViewState extends State<SigninAccountView>
         ),
         //todo cập nhật phiên bản  sắp tới
         content: Text(
-            'Hiện tại app Cây Khế đã nâng cấp lên phiên bản 1.1.3, bạn phải cập nhật ứng dụng để có thể thực hiện các nhiệm vụ mới.',
+            'Hiện tại app Mamo đã nâng cấp lên phiên bản mới, bạn phải cập nhật ứng dụng để có thể thực hiện nhiệm vụ.',
             textAlign: TextAlign.justify,
             style: TextStyle(color: Colors.black54, fontSize: setSp(14))),
         actions: [
@@ -395,7 +395,7 @@ class SigninAccountViewState extends State<SigninAccountView>
 
   launchURL() async {
     const url =
-        'https://play.google.com/store/apps/details?id=com.share4seo.caykhe';
+        'https://play.google.com/store/apps/details?id=com.utility.mamo';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

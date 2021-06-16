@@ -15,11 +15,11 @@ class SplashView extends StatefulWidget {
 class SplashViewState extends State<SplashView> {
 
   startTimer() async {
-    var duration = Duration(seconds: 3);
+    var duration = Duration(seconds: 2);
     return Timer(duration, router);
   }
   router(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) =>SigninAccountView()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>SigninAccountView()));
   }
 
   @override

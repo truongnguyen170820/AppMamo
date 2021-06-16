@@ -47,6 +47,8 @@ class ApiConstants {
   static ApiConstants shared = ApiConstants();
 
   String getFullImage(String url) {
+    if (url == null) return "";
+    if (url.startsWith("http")) return url;
     return BASE_IMAGE_URL + url.toString();
   }
 }

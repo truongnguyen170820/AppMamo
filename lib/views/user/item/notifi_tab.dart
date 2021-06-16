@@ -55,12 +55,8 @@ class _NotificationTabState extends State<NotificationTab> {
                onRefresh: _refreshPage,
                child: ListView.builder(
                    physics: BouncingScrollPhysics(),
-                   itemCount: getRecentRewardBloc.getListLength(),
+                   itemCount: listRecentReward.length,
                    itemBuilder: (context, index){
-                     if (getRecentRewardBloc.canLoadMore(index, getRecentRewardBloc.getListLength())) {
-                       getRecentRewardBloc.getReaderList();
-                       return customLoading;
-                     }
                      return Container(
                        margin: EdgeInsets.only(left: setWidth(16), right: setWidth(16), top: setHeight(9), bottom: setHeight(9)),
                        height: setHeight(48),
